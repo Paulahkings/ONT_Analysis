@@ -7,6 +7,7 @@ FAST5s=/home/ekariuki/eanbitRT21/recov_data.zip
 ONTdata=/home/ekariuki/eanbitRT21/ONTdata
 FASTQs=/home/ekariuki/eanbitRT21/fastqs
 SEQ_SUMMARY=/home/ekariuki/eanbitRT21/fastqs/sequencing_summary.txt
+
 #########################################################
 #echo 'Downloading Guppy'
 
@@ -32,3 +33,11 @@ echo 'Running pycoQC ...'
 
 pycoQC -f $SEQ_SUMMARY -o $FASTQs/pycoqc.html
 ########################################################
+echo 'Running nanofilt ...'
+
+gunzip -c $FASTQs/pass | NanoFilt -q 10 | gzip > $FASTQs/filtered-reads.fastq.gz
+########################################################
+echo 'Adapter trimming with porechop... '
+
+porechop -i $FASTQs/filtered-reads.fastq.gz -o $porechop/output_reads.fastq.gz
+#######################################################
