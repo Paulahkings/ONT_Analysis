@@ -41,3 +41,36 @@ echo 'Adapter trimming with porechop... '
 
 porechop -i $FASTQs/filtered-reads.fastq.gz -o $porechop/output_reads.fastq.gz
 #######################################################
+echo mapping ...
+#       echo ' Generating .bam files ... '
+
+#       samtools view -b $mapped.sam > $mapped.bam
+
+#       echo 'Sorting the .bam file...'
+
+#       samtools sort $mapped.bam -o $mapped_sorted.bam
+
+#       echo 'Indexing the sorted bam file...'
+
+#       samtools index $mapped_sorted.bam
+
+#       echo 'Obtaining a count of the total no. of alignments... '
+
+#       samtools view $mapped_sorted.bam | wc -l
+
+#       echo 'Getting only the mapped reads in .bam format... '
+
+#       samtools view -b -F 4 $mapped_sorted.bam > $ref_mapped.bam
+
+#       echo 'Indexing the mapped reads... '
+
+#       samtools index $ref_mapped.bam
+
+#       echo 'Sorting the bam files... '
+
+#       samtools sort $ref_mapped.bam -o $ref_map_sorted.bam
+
+        ########## CONVERTING THE READS TO FASTQ ############
+#       echo 'Using samtools to convert bams to fastq format... '
+
+#       samtools bam2fq $ref_map_sorted.bam > $ref_Mapped.fastq
