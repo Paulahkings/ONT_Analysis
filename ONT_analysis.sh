@@ -5,9 +5,10 @@
 GuppyBinary="https://mirror.oxfordnanoportal.com/software/analysis/ont-guppy_5.0.11_linux64.tar.gz"
 FAST5s=/home/ekariuki/eanbitRT21/recov_data.zip
 ONTdata=/home/ekariuki/eanbitRT21/ONTdata
-FASTQs=/home/ekariuki/eanbitRT21/fastqs
+FASTQs=/home/ekariuki/eanbitRT21/fastqs/pass
 SEQ_SUMMARY=/home/ekariuki/eanbitRT21/fastqs/sequencing_summary.txt
-
+porechop=/home/ekariuki/eanbitRT21/Porechop/results
+RES=/home/ekariuki/eanbitRT21/results
 #########################################################
 #echo 'Downloading Guppy'
 
@@ -29,19 +30,29 @@ SEQ_SUMMARY=/home/ekariuki/eanbitRT21/fastqs/sequencing_summary.txt
 #-s $FASTQs --cpu_threads_per_caller 16 --num_callers 1 \
 #-c dna_r9.4.1_450bps_hac.cfg
 ########################################################
-echo 'Running pycoQC ...'
+#echo 'Running pycoQC ...'
 
-pycoQC -f $SEQ_SUMMARY -o $FASTQs/pycoqc.html
+#pycoQC -f $SEQ_SUMMARY -o $RES/pycoqc.html
+########################################################
+echo 'Convert basecalled fastqs.gz into one .qz file ...'
+
+gunzip -c $FASTQs/*.gz | gzip > $RES/reads.fastq.gz
 ########################################################
 echo 'Running nanofilt ...'
 
-gunzip -c $FASTQs/pass | NanoFilt -q 10 | gzip > $FASTQs/filtered-reads.fastq.gz
+gunzip -c $RES/reads.fastq.gz | NanoFilt -q 8 | gzip > $RES/filtered-reads.fastq.gz
 ########################################################
 echo 'Adapter trimming with porechop... '
 
-porechop -i $FASTQs/filtered-reads.fastq.gz -o $porechop/output_reads.fastq.gz
+porechop -i $RES/filtered-reads.fastq.gz -o $RES/adfree_reads.fastq.gz
 #######################################################
-echo mapping ...
+echo 'Running Nanoplot post QC/filtering ...'
+
+NanoPlot -t 20 --fastq $RES/adfree_reads.fastq.gz --N50 -o $RES \
+--maxlength 40000 --plots dot --legacy hex
+
+######################################################
+#echo 'mapping ...'
 #       echo ' Generating .bam files ... '
 
 #       samtools view -b $mapped.sam > $mapped.bam
