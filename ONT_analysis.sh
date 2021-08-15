@@ -10,29 +10,29 @@ SEQ_SUMMARY=/home/ekariuki/eanbitRT21/fastqs/sequencing_summary.txt
 porechop=/home/ekariuki/eanbitRT21/Porechop/results
 RES=/home/ekariuki/eanbitRT21/results
 #########################################################
-#echo 'Downloading Guppy'
+echo 'Downloading Guppy'
 
-#wget $GuppyBinary
+wget $GuppyBinary
 #########################################################
-#echo 'Unpack the guppy binary files'
+echo 'Unpack the guppy binary files'
 
-#tar -xvzf ont-guppy_5.0.11_linux64.tar.gz
+tar -xvzf ont-guppy_5.0.11_linux64.tar.gz
 #########################################################
-#echo 'unzipping fast5 files ...'
+echo 'unzipping fast5 files ...'
 
-#unzip -q $FAST5s -d $ONTdata
+unzip -q $FAST5s -d $ONTdata
 #########################################################
 # To perform the basecalling step you need to know the flowcell and ONT kit used to generate your 
 # fast5 files and select the appropriate config file
 #########################################################
-#echo 'performing basecalling ...'
-#guppy_basecaller --compress_fastq -i $ONTdata/ \
-#-s $FASTQs --cpu_threads_per_caller 16 --num_callers 1 \
-#-c dna_r9.4.1_450bps_hac.cfg
+echo 'performing basecalling ...'
+guppy_basecaller --compress_fastq -i $ONTdata/ \
+-s $FASTQs --cpu_threads_per_caller 16 --num_callers 1 \
+-c dna_r9.4.1_450bps_hac.cfg
 ########################################################
-#echo 'Running pycoQC ...'
+echo 'Running pycoQC ...'
 
-#pycoQC -f $SEQ_SUMMARY -o $RES/pycoqc.html
+pycoQC -f $SEQ_SUMMARY -o $RES/pycoqc.html
 ########################################################
 echo 'Convert basecalled fastqs.gz into one .qz file ...'
 
@@ -52,36 +52,37 @@ NanoPlot -t 20 --fastq $RES/adfree_reads.fastq.gz --N50 -o $RES \
 --maxlength 40000 --plots dot --legacy hex
 
 ######################################################
-#echo 'mapping ...'
-#       echo ' Generating .bam files ... '
+echo 'mapping ...'
 
-#       samtools view -b $mapped.sam > $mapped.bam
+echo ' Generating .bam files ... '
 
-#       echo 'Sorting the .bam file...'
+samtools view -b $mapped.sam > $mapped.bam
 
-#       samtools sort $mapped.bam -o $mapped_sorted.bam
+echo 'Sorting the .bam file...'
 
-#       echo 'Indexing the sorted bam file...'
+samtools sort $mapped.bam -o $mapped_sorted.bam
 
-#       samtools index $mapped_sorted.bam
+echo 'Indexing the sorted bam file...'
 
-#       echo 'Obtaining a count of the total no. of alignments... '
+samtools index $mapped_sorted.bam
 
-#       samtools view $mapped_sorted.bam | wc -l
+echo 'Obtaining a count of the total no. of alignments... '
 
-#       echo 'Getting only the mapped reads in .bam format... '
+samtools view $mapped_sorted.bam | wc -l
 
-#       samtools view -b -F 4 $mapped_sorted.bam > $ref_mapped.bam
+echo 'Getting only the mapped reads in .bam format... '
 
-#       echo 'Indexing the mapped reads... '
+samtools view -b -F 4 $mapped_sorted.bam > $ref_mapped.bam
 
-#       samtools index $ref_mapped.bam
+echo 'Indexing the mapped reads... '
 
-#       echo 'Sorting the bam files... '
+samtools index $ref_mapped.bam
 
-#       samtools sort $ref_mapped.bam -o $ref_map_sorted.bam
+echo 'Sorting the bam files... '
 
-        ########## CONVERTING THE READS TO FASTQ ############
-#       echo 'Using samtools to convert bams to fastq format... '
+samtools sort $ref_mapped.bam -o $ref_map_sorted.bam
 
-#       samtools bam2fq $ref_map_sorted.bam > $ref_Mapped.fastq
+########## CONVERTING THE READS TO FASTQ ############
+echo 'Using samtools to convert bams to fastq format... '
+
+samtools bam2fq $ref_map_sorted.bam > $ref_Mapped.fastq
