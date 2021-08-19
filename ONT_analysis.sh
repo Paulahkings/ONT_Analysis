@@ -86,3 +86,21 @@ samtools sort $ref_mapped.bam -o $ref_map_sorted.bam
 echo 'Using samtools to convert bams to fastq format... '
 
 samtools bam2fq $ref_map_sorted.bam > $ref_Mapped.fastq
+################ RUNNING FREEBAYES ##################
+echo 'Generating a vcf file ...'
+
+freebayes -f $Genome.fna $sorted.bam >var.vcf
+####### ANNOTATING THE VCF FILE WITH SNPEFF #########
+echo 'Building a snpEff database ...'
+
+# In this step it is assumed that you have updated the snpEff.config 
+# file with the details of the genome whose .vcf file you want to 
+# generate, and you have added the genes.gff.gz file and the 
+# genome.fna.gz files to the data and genomes folders respectively.
+
+java -jar snpEff.jar build -gff3 -v GCF_905115235.1
+#####################################################
+echo 'Running SnpEff ...'
+
+java -Xmx8g -jar snpEff.jar $Genome.fna var.vcf > annotated.vcf
+#####################################################
